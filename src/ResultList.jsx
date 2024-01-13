@@ -1,4 +1,9 @@
-const ResultList = () => {
+import { calculateInvestmentResults, formatter } from "./util/investment";
+
+const ResultList = ({ userInput }) => {
+  const results = calculateInvestmentResults(userInput);
+
+  // console.log(data);
   return (
     <div className="max-w-[50rem] flex items-center p-[1rem]">
       <table className="mb-[2rem] text-right">
@@ -13,13 +18,27 @@ const ResultList = () => {
         </thead>
 
         <tbody className="text-[#c2e9e0] text-sm">
-          <tr>
-            <td className="px-2">1</td>
-            <td className="px-2">$10,850</td>
-            <td className="px-2">$550</td>
-            <td className="px-2">$550</td>
-            <td className="px-2">$10,300</td>
-          </tr>
+          {results.map((result) => {
+            const totalInterest =
+              result.valueEndOfYear -
+              result.annualInvestment * result.year -
+              userInput.initialInvestment;
+
+            const totalAmmountInvest =
+              userInput.initialInvestment +
+              userInput.annualInvestment * result.year;
+            return (
+              <tr key={result.year}>
+                <td className="px-2">{result.year}</td>
+                <td className="px-2">
+                  {formatter.format(result.valueEndOfYear)}
+                </td>
+                <td className="px-2">{formatter.format(result.interest)}</td>
+                <td className="px-2">{formatter.format(totalInterest)}</td>
+                <td className="px-2">{formatter.format(totalAmmountInvest)}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
